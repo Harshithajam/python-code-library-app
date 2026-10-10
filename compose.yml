@@ -4,77 +4,105 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: "devopspassword"
-      MYSQL_DATABASE: "library"
+      MYSQL_ROOT_PASSWORD: devopspassword
+      MYSQL_DATABASE: library
+    ports:
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mydata:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - myapp
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
-    networks:
-      - mynetwork
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: 100M
+        limits:
+          cpus: "0.5"
+          memory: 200M
 
   auth_service:
     image: harshithajam/python-code-library-app:${TAG:-latest}
     command: python auth/auth_service.py
     ports:
       - "5001:5001"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     depends_on:
       - db
     networks:
-      - mynetwork
+      - myapp
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: 100M
+        limits:
+          cpus: "0.5"
+          memory: 200M
 
   book_service:
     image: harshithajam/python-code-library-app:${TAG:-latest}
     command: python book/book_service.py
     ports:
       - "5002:5002"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     depends_on:
       - db
     networks:
-      - mynetwork
+      - myapp
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: 100M
+        limits:
+          cpus: "0.5"
+          memory: 200M
 
   borrow_service:
     image: harshithajam/python-code-library-app:${TAG:-latest}
     command: python borrow/borrow_service.py
     ports:
       - "5003:5003"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     depends_on:
       - db
     networks:
-      - mynetwork
+      - myapp
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: 100M
+        limits:
+          cpus: "0.5"
+          memory: 200M
 
   frontend:
     image: harshithajam/python-code-library-app:${TAG:-latest}
     ports:
       - "5000:5000"
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
     depends_on:
       - auth_service
       - book_service
       - borrow_service
     networks:
-      - mynetwork
+      - myapp
+    deploy:
+      replicas: 1
+      resources:
+        reservations:
+          cpus: "0.25"
+          memory: 100M
+        limits:
+          cpus: "0.5"
+          memory: 200M
 
 networks:
-  mynetwork:
+  myapp:
     driver: overlay
 
 volumes:
-  mysql_data:
+  mydata:
