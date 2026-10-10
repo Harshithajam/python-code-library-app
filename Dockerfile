@@ -8,11 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire application (all services + templates + static)
 COPY app.py .
-COPY auth/ ./auth/
-COPY book/ ./book/
-COPY borrow/ ./borrow/
-COPY templates ./templates/
-COPY database ./database/
+COPY templates ./templates
+
 
 # Default command — can be overridden per service in compose
 EXPOSE 5000
