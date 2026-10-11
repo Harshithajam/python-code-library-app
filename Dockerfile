@@ -6,8 +6,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy app.py + templates
-COPY app.py .
-COPY templates ./templates
+COPY . .
 
 EXPOSE 5000
 CMD ["python", "app.py"]
