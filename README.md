@@ -1,4 +1,4 @@
-Clone the repository
+Clone the repo
 
 docker build -t dbimage database/ <br />
 docker build -t authimage auth/ <br />
